@@ -659,31 +659,31 @@ def main(disable_exit=False):
             if PROXY_COUNTER < PROXIES_LEN:
                 PROXY_COUNTER += 1
         console_log(traceback_string, ERROR, silent_mode=SILENT_MODE)
-   except Exception as E:
-    PROXY_ERROR_COUNTER_LIMIT += 1
+    except Exception as E:
+        PROXY_ERROR_COUNTER_LIMIT += 1
 
-    # Save Selenium debug files
-    try:
-        if DRIVER is not None:
-            DRIVER.save_screenshot("debug.png")
-
-            with open("debug.html", "w", encoding="utf-8") as f:
-                f.write(DRIVER.page_source)
-
-            print("Saved debug.png and debug.html")
-
-    except Exception as screenshot_error:
-        print(f"Failed to save debug files: {screenshot_error}")
-
-    logging.critical("EXC_INFO:", exc_info=True)
-
-    traceback_string = traceback.format_exc()
-
-    # Disable huge Selenium stacktrace spam
-    if str(type(E)).find('selenium') != -1 and traceback_string.find('Stacktrace:') != -1:
-        traceback_string = traceback_string.split('Stacktrace:', 1)[0]
-
-    console_log(traceback_string, ERROR, silent_mode=SILENT_MODE)
+        # Save Selenium debug files
+        try:
+            if DRIVER is not None:
+                DRIVER.save_screenshot("debug.png")
+    
+                with open("debug.html", "w", encoding="utf-8") as f:
+                    f.write(DRIVER.page_source)
+    
+                print("Saved debug.png and debug.html")
+    
+        except Exception as screenshot_error:
+            print(f"Failed to save debug files: {screenshot_error}")
+    
+        logging.critical("EXC_INFO:", exc_info=True)
+    
+        traceback_string = traceback.format_exc()
+    
+        # Disable huge Selenium stacktrace spam
+        if str(type(E)).find('selenium') != -1 and traceback_string.find('Stacktrace:') != -1:
+            traceback_string = traceback_string.split('Stacktrace:', 1)[0]
+    
+        console_log(traceback_string, ERROR, silent_mode=SILENT_MODE)
 
     if PROXIES != [] and PROXY_ERROR_COUNTER == PROXY_ERROR_COUNTER_LIMIT:
         PROXY_ERROR_COUNTER = 0
