@@ -1,5 +1,7 @@
 from .EmailAPIs import *
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from pathlib import Path
 
@@ -131,19 +133,42 @@ class EsetKeygen(object):
 
 
         try:
-            # Skip onboarding wizard if present
-            skip_btn = self.driver.find_elements(
-                By.XPATH,
-                "//button[contains(., 'Skip introduction')]"
+            # Wait for onboarding popup
+            skip_btn = WebDriverWait(self.driver, 20).until(
+                EC.element_to_be_clickable((
+                    By.XPATH,
+                    "//button[contains(., 'Skip introduction')]"
+                ))
             )
         
-            if skip_btn:
-                skip_btn[0].click()
-                print("Skipped onboarding")
+            # Scroll button into view
+            self.driver.execute_script(
+                "arguments[0].scrollIntoView(true);",
+                skip_btn
+            )
+        
+            time.sleep(1)
+        
+            # Reliable click for headless GitHub Actions
+            self.driver.execute_script(
+                "arguments[0].click();",
+                skip_btn
+            )
+        
+            print("Skipped onboarding successfully")
+        
+            # Wait until popup disappears
+            WebDriverWait(self.driver, 20).until_not(
+                EC.presence_of_element_located((
+                    By.XPATH,
+                    "//button[contains(., 'Skip introduction')]"
+                ))
+            )
+        
+            time.sleep(2)
         
         except Exception as e:
             print(f"Could not skip onboarding: {e}")
-
         
         try:
             uCE(
