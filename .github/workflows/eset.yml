@@ -115,11 +115,15 @@ jobs:
             echo -e "\nKey:" >> $GITHUB_STEP_SUMMARY
             cat ./*KEYS.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "None" >> $GITHUB_STEP_SUMMARY
           fi
-
+      - name: Show files
+        run: |
+         pwd
+         ls
       - name: Setup & Run Script (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
+        
           cd ESET-KeyGen
           python -m venv venv
           .\venv\Scripts\pip install -r requirements.txt
