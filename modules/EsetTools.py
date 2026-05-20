@@ -127,7 +127,31 @@ class EsetKeygen(object):
         logging.info(f'[{self.mode}] Request sending...')
         console_log(f'\n[{self.mode}] Request sending...', INFO, silent_mode=SILENT_MODE)
         self.driver.get('https://home.eset.com/subscriptions/choose-trial')
-        uCE(self.driver, f"return {GET_EBAV}('button', 'data-label', 'subscription-choose-trial-ehsp-card-button') != null")
+        try:
+            uCE(
+                self.driver,
+                f"return {GET_EBAV}('button', 'data-label', 'subscription-choose-trial-ehsp-card-button') != null"
+            )
+        
+        except Exception as e:
+            print("Failed waiting for ESET button")
+        
+            # Save screenshot
+            try:
+                self.driver.save_screenshot("failed-page.png")
+        
+                with open("failed-page.html", "w", encoding="utf-8") as f:
+                    f.write(self.driver.page_source)
+        
+                print("Saved failed-page.png and failed-page.html")
+        
+            except Exception as debug_error:
+                print(f"Could not save debug files: {debug_error}")
+        
+            raise e
+
+
+        
         if self.mode == 'ESET HOME':
             uCE(self.driver, f"return {CLICK_WITH_BOOL}({GET_EBAV}('button', 'data-label', 'subscription-choose-trial-ehsp-card-button'))")
         elif self.mode == 'SMALL BUSINESS':
