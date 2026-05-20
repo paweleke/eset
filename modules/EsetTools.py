@@ -127,6 +127,23 @@ class EsetKeygen(object):
         logging.info(f'[{self.mode}] Request sending...')
         console_log(f'\n[{self.mode}] Request sending...', INFO, silent_mode=SILENT_MODE)
         self.driver.get('https://home.eset.com/subscriptions/choose-trial')
+
+
+        try:
+            # Skip onboarding wizard if present
+            skip_btn = self.driver.find_elements(
+                By.XPATH,
+                "//button[contains(., 'Skip introduction')]"
+            )
+        
+            if skip_btn:
+                skip_btn[0].click()
+                print("Skipped onboarding")
+        
+        except Exception as e:
+            print(f"Could not skip onboarding: {e}")
+
+        
         try:
             uCE(
                 self.driver,
